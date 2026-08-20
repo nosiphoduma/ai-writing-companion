@@ -1,50 +1,38 @@
-# AI Writing Companion
+xd# AI Writing Companion
 
 AI Productivity Assistant — Project Prompt
 
-Create a modern AI Productivity Assistant web app with a clean, professional, easy-to-use design.
+A modern, professional AI-powered productivity web app designed to help users complete everyday workplace tasks more efficiently.
 
-The app should help users with everyday productivity tasks, especially writing and organizing information.
+Features
 
-Include:
+1. Smart Email Generator
 
-● An AI assistant interface where users can enter requests.
+Generate professional emails quickly by providing the purpose of the email and selecting an appropriate tone.
 
-● A quick option to start with an email.
+2. Meeting Notes Summarizer
 
-● A tool selection area with options for writing emails, summarizing text, rewriting text, brainstorming ideas, and creating professional content.
+Turn lengthy meeting notes into concise summaries while identifying important decisions and action items.
 
-● A clean dashboard/home screen.
+3. AI Task Planner
 
-● A simple, modern layout that is easy for beginners to understand.
+Enter a goal or project and use AI to break it down into clear, manageable tasks that can be tracked using a checklist.
 
-● A professional blue-and-white color scheme.
+Key Features
 
-● Responsive design that works well on both desktop and mobile.
+* Clean and professional dashboard
+* Simple and beginner-friendly interface
+* Responsive design for desktop and mobile
+* AI-generated outputs
+* Clear navigation and easy-to-use controls
+* Professional blue-and-white visual design
 
-● Clear buttons, cards, icons, and navigation.
+Responsible AI
 
-● Keep the interface simple and uncluttered.
+AI-generated content should be reviewed by the user before being used or shared. Users remain responsible for checking the accuracy and suitability of AI-generated information.
 
-Build the project as a polished working prototype, with the main screens and interactions connected.
+Project
 
-This project was built with [Lovable](https://lovable.dev).
+This project was created as part of an AI productivity project and was built using Lovable.
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c98a9747-c5b6-4996-a042-240da1f2aecb).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+The application demonstrates practical use of AI, prompt engineering, and responsible AI principles to support workplace productivity.

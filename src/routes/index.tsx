@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Aster Assistant — AI Productivity Assistant" },
       {
         property: "og:description",
-        content: "Write emails, summarize, rewrite, brainstorm and draft professional content in seconds.",
+        content: "Generate emails, summarize meeting notes and plan tasks in seconds.",
       },
     ],
   }),

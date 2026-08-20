@@ -2,13 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowRight, Copy, Loader2, Sparkles } from "lucide-react";
+import { ArrowRight, Copy, Loader2, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { runAssistant } from "@/lib/assistant.functions";
-import { TOOLS, TOOL_MAP, isToolId, type ToolId } from "@/lib/tools";
+import {
+  TOOLS,
+  TOOL_MAP,
+  TOOL_OPTIONS,
+  defaultOptions,
+  isToolId,
+  type ToolId,
+} from "@/lib/tools";
+
 
 export const Route = createFileRoute("/assistant")({
   validateSearch: (search: Record<string, unknown>): { tool: ToolId } => ({

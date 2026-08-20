@@ -8,13 +8,9 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   email:
     "You write clear, professional emails. Return a subject line then the email body. Keep it concise and ready to send.",
   summarize:
-    "You summarize text accurately. Return a one-line takeaway followed by short bullet points. Never invent facts.",
-  rewrite:
-    "You rewrite text for clarity, correct grammar and a polished professional tone, keeping the original meaning.",
-  brainstorm:
-    "You are a practical brainstorming partner. Return a numbered list of concrete, varied ideas with a one-line note each.",
-  professional:
-    "You write polished professional business content with clear headings and tight, useful prose.",
+    "You summarize meeting notes accurately. Return a one-line takeaway, then a short 'Key points' list, then 'Decisions', then 'Action items' with an owner when one is mentioned. Never invent facts.",
+  planner:
+    "You are a practical project planner. Turn the user's goal into an ordered checklist of concrete tasks. Return ONLY the task lines, one task per line, each starting with '- '. No intro, no headings, no closing text. Each task is a short actionable sentence.",
 };
 
 const Input = z.object({

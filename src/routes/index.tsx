@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 
 const STATS = [
   { icon: Clock, label: "Minutes saved per draft", value: "~12" },
-  { icon: Zap, label: "Tools ready to use", value: "5" },
+  { icon: Zap, label: "Tools ready to use", value: "3" },
   { icon: ShieldCheck, label: "Your text stays yours", value: "Private" },
 ];
 

@@ -47,23 +47,41 @@ function AssistantPage() {
   const navigate = Route.useNavigate();
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [done, setDone] = useState<Record<number, boolean>>({});
   const [options, setOptions] = useState<Record<string, string>>(() => defaultOptions(search.tool));
   const run = useServerFn(runAssistant);
 
   const tool = TOOL_MAP[search.tool];
   const toolOptions = TOOL_OPTIONS[search.tool];
+  const isPlanner = search.tool === "planner";
+  const completed = tasks.filter((_, i) => done[i]).length;
 
   const mutation = useMutation({
     mutationFn: (data: { tool: ToolId; prompt: string; options: Record<string, string> }) =>
       run({ data }),
-    onSuccess: (data) => setResult(data.text),
+    onSuccess: (data) => {
+      setResult(data.text);
+      setTasks(parseTasks(data.text));
+      setDone({});
+    },
     onError: () => toast.error("Something went wrong. Please try again."),
   });
 
   function selectTool(id: ToolId) {
     setResult("");
+    setTasks([]);
+    setDone({});
     setOptions(defaultOptions(id));
     void navigate({ search: { tool: id } });
+  }
+
+  function copyResult() {
+    const text = isPlanner
+      ? tasks.map((t, i) => `${done[i] ? "[x]" : "[ ]"} ${t}`).join("\n")
+      : result;
+    void navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
   }
 
   function submit() {

@@ -37,22 +37,31 @@ function AssistantPage() {
   const navigate = Route.useNavigate();
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
+  const [options, setOptions] = useState<Record<string, string>>(() => defaultOptions(search.tool));
   const run = useServerFn(runAssistant);
 
   const tool = TOOL_MAP[search.tool];
+  const toolOptions = TOOL_OPTIONS[search.tool];
 
   const mutation = useMutation({
-    mutationFn: (data: { tool: ToolId; prompt: string }) => run({ data }),
+    mutationFn: (data: { tool: ToolId; prompt: string; options: Record<string, string> }) =>
+      run({ data }),
     onSuccess: (data) => setResult(data.text),
     onError: () => toast.error("Something went wrong. Please try again."),
   });
+
+  function selectTool(id: ToolId) {
+    setResult("");
+    setOptions(defaultOptions(id));
+    void navigate({ search: { tool: id } });
+  }
 
   function submit() {
     if (!prompt.trim()) {
       toast.error("Tell the assistant what you need first.");
       return;
     }
-    mutation.mutate({ tool: search.tool, prompt: prompt.trim() });
+    mutation.mutate({ tool: search.tool, prompt: prompt.trim(), options });
   }
 
   return (
@@ -71,7 +80,7 @@ function AssistantPage() {
               <button
                 key={t.id}
                 type="button"
-                onClick={() => navigate({ search: { tool: t.id } })}
+                onClick={() => selectTool(t.id)}
                 className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition-all ${
                   active
                     ? "border-primary bg-secondary shadow-[var(--shadow-brand)]"
@@ -80,9 +89,7 @@ function AssistantPage() {
               >
                 <span
                   className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-primary"
+                    active ? "bg-primary text-primary-foreground" : "bg-secondary text-primary"
                   }`}
                 >
                   <Icon className="size-4.5" />
@@ -99,20 +106,45 @@ function AssistantPage() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
-          <h2 className="text-sm font-semibold">Your request</h2>
+          <h2 className="text-sm font-semibold">{tool.name}</h2>
           <Textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder={tool.placeholder}
             className="mt-3 min-h-44 resize-none rounded-xl text-sm"
           />
-          <button
-            type="button"
-            onClick={() => setPrompt(tool.example)}
-            className="mt-3 text-xs text-primary underline-offset-4 hover:underline"
-          >
-            Try an example: “{tool.example}”
-          </button>
+          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setPrompt(tool.example)}
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              Use an example
+            </button>
+            <span>{prompt.length}/8000</span>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {toolOptions.map((opt) => (
+              <label key={opt.id} className="block">
+                <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                  {opt.label}
+                </span>
+                <select
+                  value={options[opt.id] ?? opt.choices[0]}
+                  onChange={(e) => setOptions((p) => ({ ...p, [opt.id]: e.target.value }))}
+                  className="h-9 w-full rounded-lg border border-input bg-background px-2 text-sm text-foreground"
+                >
+                  {opt.choices.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+
           <Button
             onClick={submit}
             disabled={mutation.isPending}
@@ -133,19 +165,24 @@ function AssistantPage() {
         </section>
 
         <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold">Result</h2>
             {result && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  void navigator.clipboard.writeText(result);
-                  toast.success("Copied to clipboard");
-                }}
-              >
-                <Copy className="size-3.5" /> Copy
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="sm" onClick={submit} disabled={mutation.isPending}>
+                  <RotateCcw className="size-3.5" /> Regenerate
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(result);
+                    toast.success("Copied to clipboard");
+                  }}
+                >
+                  <Copy className="size-3.5" /> Copy
+                </Button>
+              </div>
             )}
           </div>
           <div className="mt-3 min-h-44 whitespace-pre-wrap rounded-xl bg-muted/60 p-4 text-sm leading-relaxed">
@@ -164,3 +201,4 @@ function AssistantPage() {
     </main>
   );
 }
+

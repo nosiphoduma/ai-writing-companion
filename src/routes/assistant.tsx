@@ -194,33 +194,57 @@ function AssistantPage() {
 
         <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold">Result</h2>
+            <h2 className="text-sm font-semibold">
+              {isPlanner ? "Task checklist" : "Result"}
+              {isPlanner && tasks.length > 0 && (
+                <span className="ml-2 text-xs font-normal text-muted-foreground">
+                  {completed}/{tasks.length} done
+                </span>
+              )}
+            </h2>
             {result && (
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="sm" onClick={submit} disabled={mutation.isPending}>
                   <RotateCcw className="size-3.5" /> Regenerate
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    void navigator.clipboard.writeText(result);
-                    toast.success("Copied to clipboard");
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={copyResult}>
                   <Copy className="size-3.5" /> Copy
                 </Button>
               </div>
             )}
           </div>
-          <div className="mt-3 min-h-44 whitespace-pre-wrap rounded-xl bg-muted/60 p-4 text-sm leading-relaxed">
+          <div className="mt-3 min-h-44 rounded-xl bg-muted/60 p-4 text-sm leading-relaxed">
             {mutation.isPending ? (
-              <span className="text-muted-foreground">Drafting your {tool.name.toLowerCase()}…</span>
+              <span className="text-muted-foreground">
+                {isPlanner ? "Building your task plan…" : `Drafting your ${tool.name.toLowerCase()}…`}
+              </span>
+            ) : isPlanner && tasks.length > 0 ? (
+              <ul className="space-y-2.5">
+                {tasks.map((t, i) => (
+                  <li key={`${i}-${t}`} className="flex items-start gap-3">
+                    <Checkbox
+                      id={`task-${i}`}
+                      checked={!!done[i]}
+                      onCheckedChange={(v) => setDone((p) => ({ ...p, [i]: v === true }))}
+                      className="mt-0.5"
+                    />
+                    <label
+                      htmlFor={`task-${i}`}
+                      className={`cursor-pointer select-none text-sm ${
+                        done[i] ? "text-muted-foreground line-through" : ""
+                      }`}
+                    >
+                      {t}
+                    </label>
+                  </li>
+                ))}
+              </ul>
             ) : result ? (
-              result
+              <span className="whitespace-pre-wrap">{result}</span>
             ) : (
               <span className="flex items-center gap-2 text-muted-foreground">
-                Your draft will appear here <ArrowRight className="size-3.5" />
+                {isPlanner ? "Your checklist will appear here" : "Your draft will appear here"}{" "}
+                <ArrowRight className="size-3.5" />
               </span>
             )}
           </div>

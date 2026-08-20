@@ -30,7 +30,7 @@ export const Route = createFileRoute("/assistant")({
       {
         name: "description",
         content:
-          "Pick a tool, describe your task, and get a polished draft: emails, summaries, rewrites, ideas and professional content.",
+          "Pick a tool, describe your task, and get results: smart emails, meeting note summaries and AI task plans.",
       },
       { property: "og:title", content: "AI Assistant Workspace | Aster Assistant" },
       {

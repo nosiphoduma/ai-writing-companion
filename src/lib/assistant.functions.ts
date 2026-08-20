@@ -20,6 +20,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 const Input = z.object({
   tool: z.string().min(1),
   prompt: z.string().min(1).max(8000),
+  options: z.record(z.string(), z.string()).optional(),
 });
 
 export const runAssistant = createServerFn({ method: "POST" })
@@ -33,11 +34,17 @@ export const runAssistant = createServerFn({ method: "POST" })
       SYSTEM_PROMPTS[data.tool] ??
       "You are a helpful productivity assistant. Answer clearly and concisely in plain text.";
 
+    const opts = Object.entries(data.options ?? {})
+      .filter(([, v]) => v.trim().length > 0)
+      .map(([k, v]) => `- ${k}: ${v}`)
+      .join("\n");
+
     const result = streamText({
       model: gateway("google/gemini-2.5-flash"),
       system: `${system} Use plain text with simple line breaks; avoid markdown symbols like ** or #.`,
-      prompt: data.prompt,
+      prompt: opts ? `${data.prompt}\n\nFollow these preferences:\n${opts}` : data.prompt,
     });
 
     return { text: await result.text };
   });
+

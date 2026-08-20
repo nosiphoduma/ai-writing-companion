@@ -59,3 +59,40 @@ export const TOOL_MAP = Object.fromEntries(TOOLS.map((t) => [t.id, t])) as Recor
 export function isToolId(value: unknown): value is ToolId {
   return typeof value === "string" && value in TOOL_MAP;
 }
+
+export type ToolOption = {
+  id: string;
+  label: string;
+  choices: string[];
+};
+
+export const TOOL_OPTIONS: Record<ToolId, ToolOption[]> = {
+  email: [
+    { id: "tone", label: "Tone", choices: ["Friendly", "Professional", "Direct", "Apologetic", "Persuasive"] },
+    { id: "length", label: "Length", choices: ["Short", "Medium", "Detailed"] },
+  ],
+  summarize: [
+    { id: "format", label: "Format", choices: ["Bullet points", "Short paragraph", "Key takeaways", "Action items"] },
+    { id: "length", label: "Length", choices: ["Very short", "Medium", "Detailed"] },
+  ],
+  rewrite: [
+    { id: "goal", label: "Goal", choices: ["Clearer", "More professional", "Friendlier", "Shorter", "More persuasive"] },
+    { id: "reading level", label: "Reading level", choices: ["Simple", "Standard", "Expert"] },
+  ],
+  brainstorm: [
+    { id: "number of ideas", label: "Ideas", choices: ["5", "10", "15"] },
+    { id: "style", label: "Style", choices: ["Practical", "Creative", "Low budget", "Ambitious"] },
+  ],
+  professional: [
+    {
+      id: "document type",
+      label: "Document",
+      choices: ["Report", "Proposal", "LinkedIn post", "Meeting agenda", "Job description"],
+    },
+    { id: "length", label: "Length", choices: ["Short", "Medium", "Detailed"] },
+  ],
+};
+
+export function defaultOptions(tool: ToolId): Record<string, string> {
+  return Object.fromEntries(TOOL_OPTIONS[tool].map((o) => [o.id, o.choices[0] as string]));
+}

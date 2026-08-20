@@ -23,6 +23,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/assistant"
+            search={{ tool: "email" }}
             activeProps={{ className: "bg-secondary text-primary" }}
             className="rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
           >

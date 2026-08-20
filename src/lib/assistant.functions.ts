@@ -34,7 +34,7 @@ export const runAssistant = createServerFn({ method: "POST" })
       "You are a helpful productivity assistant. Answer clearly and concisely in plain text.";
 
     const result = streamText({
-      model: gateway("google/gemini-3-flash"),
+      model: gateway("google/gemini-2.5-flash"),
       system: `${system} Use plain text with simple line breaks; avoid markdown symbols like ** or #.`,
       prompt: data.prompt,
     });

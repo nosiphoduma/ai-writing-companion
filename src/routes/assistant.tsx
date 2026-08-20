@@ -11,8 +11,8 @@ import { runAssistant } from "@/lib/assistant.functions";
 import { TOOLS, TOOL_MAP, isToolId, type ToolId } from "@/lib/tools";
 
 export const Route = createFileRoute("/assistant")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    tool: isToolId(search.tool) ? search.tool : ("email" as ToolId),
+  validateSearch: (search: Record<string, unknown>): { tool: ToolId } => ({
+    tool: isToolId(search["tool"]) ? search["tool"] : "email",
   }),
   head: () => ({
     meta: [

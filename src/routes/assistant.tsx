@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { runAssistant } from "@/lib/assistant.functions";
 import {
   TOOLS,
@@ -14,6 +15,7 @@ import {
   TOOL_OPTIONS,
   defaultOptions,
   isToolId,
+  parseTasks,
   type ToolId,
 } from "@/lib/tools";
 

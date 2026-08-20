@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Aster Assistant — AI Productivity Assistant" },
       {
         name: "description",
-        content: "Write emails, summarize, rewrite, brainstorm and draft professional content.",
+        content: "Smart email generator, meeting notes summarizer and AI task planner.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

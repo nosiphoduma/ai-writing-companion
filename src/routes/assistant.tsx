@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { runAssistant } from "@/lib/assistant.functions";
 import {
   TOOLS,
@@ -14,6 +15,7 @@ import {
   TOOL_OPTIONS,
   defaultOptions,
   isToolId,
+  parseTasks,
   type ToolId,
 } from "@/lib/tools";
 
@@ -28,12 +30,12 @@ export const Route = createFileRoute("/assistant")({
       {
         name: "description",
         content:
-          "Pick a tool, describe your task, and get a polished draft: emails, summaries, rewrites, ideas and professional content.",
+          "Pick a tool, describe your task, and get results: smart emails, meeting note summaries and AI task plans.",
       },
       { property: "og:title", content: "AI Assistant Workspace | Aster Assistant" },
       {
         property: "og:description",
-        content: "Write emails, summarize, rewrite, brainstorm and draft professional content.",
+        content: "Smart email generator, meeting notes summarizer and AI task planner.",
       },
     ],
   }),
@@ -45,23 +47,41 @@ function AssistantPage() {
   const navigate = Route.useNavigate();
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [done, setDone] = useState<Record<number, boolean>>({});
   const [options, setOptions] = useState<Record<string, string>>(() => defaultOptions(search.tool));
   const run = useServerFn(runAssistant);
 
   const tool = TOOL_MAP[search.tool];
   const toolOptions = TOOL_OPTIONS[search.tool];
+  const isPlanner = search.tool === "planner";
+  const completed = tasks.filter((_, i) => done[i]).length;
 
   const mutation = useMutation({
     mutationFn: (data: { tool: ToolId; prompt: string; options: Record<string, string> }) =>
       run({ data }),
-    onSuccess: (data) => setResult(data.text),
+    onSuccess: (data) => {
+      setResult(data.text);
+      setTasks(parseTasks(data.text));
+      setDone({});
+    },
     onError: () => toast.error("Something went wrong. Please try again."),
   });
 
   function selectTool(id: ToolId) {
     setResult("");
+    setTasks([]);
+    setDone({});
     setOptions(defaultOptions(id));
     void navigate({ search: { tool: id } });
+  }
+
+  function copyResult() {
+    const text = isPlanner
+      ? tasks.map((t, i) => `${done[i] ? "[x]" : "[ ]"} ${t}`).join("\n")
+      : result;
+    void navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
   }
 
   function submit() {
@@ -174,33 +194,57 @@ function AssistantPage() {
 
         <section className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold">Result</h2>
+            <h2 className="text-sm font-semibold">
+              {isPlanner ? "Task checklist" : "Result"}
+              {isPlanner && tasks.length > 0 && (
+                <span className="ml-2 text-xs font-normal text-muted-foreground">
+                  {completed}/{tasks.length} done
+                </span>
+              )}
+            </h2>
             {result && (
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="sm" onClick={submit} disabled={mutation.isPending}>
                   <RotateCcw className="size-3.5" /> Regenerate
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    void navigator.clipboard.writeText(result);
-                    toast.success("Copied to clipboard");
-                  }}
-                >
+                <Button variant="ghost" size="sm" onClick={copyResult}>
                   <Copy className="size-3.5" /> Copy
                 </Button>
               </div>
             )}
           </div>
-          <div className="mt-3 min-h-44 whitespace-pre-wrap rounded-xl bg-muted/60 p-4 text-sm leading-relaxed">
+          <div className="mt-3 min-h-44 rounded-xl bg-muted/60 p-4 text-sm leading-relaxed">
             {mutation.isPending ? (
-              <span className="text-muted-foreground">Drafting your {tool.name.toLowerCase()}…</span>
+              <span className="text-muted-foreground">
+                {isPlanner ? "Building your task plan…" : `Drafting your ${tool.name.toLowerCase()}…`}
+              </span>
+            ) : isPlanner && tasks.length > 0 ? (
+              <ul className="space-y-2.5">
+                {tasks.map((t, i) => (
+                  <li key={`${i}-${t}`} className="flex items-start gap-3">
+                    <Checkbox
+                      id={`task-${i}`}
+                      checked={!!done[i]}
+                      onCheckedChange={(v) => setDone((p) => ({ ...p, [i]: v === true }))}
+                      className="mt-0.5"
+                    />
+                    <label
+                      htmlFor={`task-${i}`}
+                      className={`cursor-pointer select-none text-sm ${
+                        done[i] ? "text-muted-foreground line-through" : ""
+                      }`}
+                    >
+                      {t}
+                    </label>
+                  </li>
+                ))}
+              </ul>
             ) : result ? (
-              result
+              <span className="whitespace-pre-wrap">{result}</span>
             ) : (
               <span className="flex items-center gap-2 text-muted-foreground">
-                Your draft will appear here <ArrowRight className="size-3.5" />
+                {isPlanner ? "Your checklist will appear here" : "Your draft will appear here"}{" "}
+                <ArrowRight className="size-3.5" />
               </span>
             )}
           </div>

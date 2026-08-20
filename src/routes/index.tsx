@@ -11,12 +11,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "A simple AI productivity assistant for writing emails, summarizing text, rewriting drafts, brainstorming ideas and creating professional content.",
+          "A simple AI productivity assistant with a smart email generator, meeting notes summarizer and AI task planner.",
       },
       { property: "og:title", content: "Aster Assistant — AI Productivity Assistant" },
       {
         property: "og:description",
-        content: "Write emails, summarize, rewrite, brainstorm and draft professional content in seconds.",
+        content: "Generate emails, summarize meeting notes and plan tasks in seconds.",
       },
     ],
   }),
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 
 const STATS = [
   { icon: Clock, label: "Minutes saved per draft", value: "~12" },
-  { icon: Zap, label: "Tools ready to use", value: "5" },
+  { icon: Zap, label: "Tools ready to use", value: "3" },
   { icon: ShieldCheck, label: "Your text stays yours", value: "Private" },
 ];
 
@@ -76,7 +76,7 @@ function Home() {
       <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Pick a tool to begin</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Five focused tools — no setup, no learning curve.
+          Three focused tools — no setup, no learning curve.
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

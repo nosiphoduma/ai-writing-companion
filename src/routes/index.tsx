@@ -76,7 +76,7 @@ function Home() {
       <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">Pick a tool to begin</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Five focused tools — no setup, no learning curve.
+          Three focused tools — no setup, no learning curve.
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
